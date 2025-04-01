@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 #Criando uma lista com strings e float 
 listA = [1,2,3,'salve o Corinthians',20.5]
-print(listaA)
+print(listA)
 #Criando uma lista com inteiros e float
 listB = [1,2,3,20.5]
 
@@ -50,7 +50,7 @@ precipSlice = precip[:,0]
 
 # extrai os dois primeiros valores da primeira linha
 # índice 2 não é incluído, pois o intervalo em Python é aberto no final
- print(precip[0,0:2])
+print(precip[0,0:2])
  
 # -1 e -1 extrai o último valor da última linha da última coluna 
 print(precip[-1,-1])
@@ -83,10 +83,10 @@ matRand4D = np.random.rand(3,10,100,100)
 print(matRand4D.ndim)
 
 # Shape da matriz 
-print(matRand4d.shape)
+print(matRand4D.shape)
 
 # Número de elementos 
-print(matRand4d.size)
+print(matRand4D.size)
 
 # Multiplicando escalar 
 print(matRand4D*3.9)
