@@ -9,8 +9,8 @@ CONAMA nº 491/2018:
         * Atenção: 250
         * Alerta: 420
         * Emergência: 500
-Supondo que para cada coluna temos a média (24h) da concentação durante 100 dias,
-e nas linhas temos 100 lugares diferentes  
+Supondo que em cada célula temos a média (24h) da concentação, as colunas indicam a medição em 100 dias,
+e nas linhas 100 lugares diferentes  
  
 """
 import numpy as np
