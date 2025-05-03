@@ -10,6 +10,7 @@ import numpy as np
 from scipy import stats
 import statsmodels.api as sm
 import pandas as pd
+#%% Fazendo o HISTOGRAMA 
 
 def FlowMaxHistograma(meltedDf,uf,repoPath):
     uf = 'GO'
@@ -17,9 +18,8 @@ def FlowMaxHistograma(meltedDf,uf,repoPath):
     #flowPath = repoPath +'/'+ 'outputs' + '/' + uf + '/' + 'flow'
     # Criando diretório
     os.makedirs(repoPath+'/'+'figuras/'+uf, exist_ok=True)
-    
 
-    # Supondo que 'meltedDf' seja o seu DataFrame original e você queira remover os NaNs
+    # Removendo os NANs
     dropnaDF = meltedDf.dropna()
     
 
