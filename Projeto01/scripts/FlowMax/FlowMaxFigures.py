@@ -52,12 +52,6 @@ def FlowMaxHistograma(meltedDf,uf,repoPath):
     
     # Remover os valores do eixo X (já que estão sendo exibidos em cima das barras)
     ax.set_xticklabels([])  # Remove os rótulos de texto no eixo X 
-
-    # Melhorando a legibilidade dos rótulos dos eixos
-    plt.xticks(rotation=45, fontsize=10, ha='right')
-    
-    # Ajustando o layout para garantir que nada seja cortado
-    plt.tight_layout()
     
     # Salvando o gráfico
     fig.savefig(repoPath+'/figuras/'+uf+'/histograma.png', bbox_inches='tight')
