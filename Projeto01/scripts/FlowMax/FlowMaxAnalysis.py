@@ -24,7 +24,7 @@ def FlowMaxAnalysis(uf,repoPath):
     
     # Abrir os dados de vazão, objeto de estudo, em um dataframe
     # Função para apular linhas == skiprows=15 
-    aqPath = r"C:\Users\Carlos - SC\Documents\GitHub\ENS5132\Projeto01\inputs\GO\60810000_Vazoes.csv"
+    aqPath = r"C:\Users\Carlos - SC\Documents\GitHub\ENS5132\Projeto01\inputs\GO\60665000_Vazoes.csv"
     aqData = pd.read_csv(aqPath, encoding='latin1', sep=';', engine='python', quotechar='"', skiprows=15)
     
     # adicionar elementos a uma lista
@@ -41,6 +41,11 @@ def FlowMaxAnalysis(uf,repoPath):
     
     # Remove coluna hora do DataFrame, todo o dado é NAN
     aqData.drop(columns = cols_drop, inplace=True)
+    
+    # Converte colunas numéricas com vírgula decimal para float
+    cols_flow = [col for col in aqData.columns if 'Vazao' in col and 'Status' not in col]
+    for col in cols_flow:
+        aqData[col] = aqData[col].str.replace(',', '.', regex=False).astype(float)
     
     # A função pd.to_datetime transforma a strins de data em objetos datetime do pandas, 
     # permitindo que façamos operações com base na data e hora, como filtar,
