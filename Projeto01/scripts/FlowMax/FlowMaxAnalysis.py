@@ -5,7 +5,6 @@ Created on Thu May  1 12:34:44 2025
 @author: Carlos - SC
 """
 import pandas as pd
-import numpy as np
 import os
 
 #Função para estutrurar os dados"
@@ -13,11 +12,7 @@ import os
 def FlowMaxAnalysis(uf,repoPath):
     uf = 'GO'
     repoPath = r"C:\Users\Carlos - SC\Documents\GitHub\ENS5132\Projeto01"
-    dataDir = r"C:\Users\Carlos - SC\Documents\GitHub\ENS5132\Projeto01\inputs" +'/'+ uf
-    
-    # Lista de arquivos dentro da pasta
-    dataList = os.listdir(dataDir)
-    #print(dataList)  
+
 #%% Lendo os dados da planilha e os salvando em uma única lista     
     # Criando lista vazia
     allFiles  =[]

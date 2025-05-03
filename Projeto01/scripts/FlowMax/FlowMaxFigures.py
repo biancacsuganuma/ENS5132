@@ -6,15 +6,14 @@ Created on Thu May  1 15:02:43 2025
 """
 import matplotlib.pyplot as plt
 import os
-import numpy as np
-from scipy import stats
-import statsmodels.api as sm
 import pandas as pd
 from matplotlib.colors import TwoSlopeNorm
 import seaborn as sns
 #%% Fazendo HIDROGRAMA 
        
 def FlowHydro(meltedDf,uf,repoPath):
+    uf= 'GO'
+    repoPath = r"C:\Users\Carlos - SC\Documents\GitHub\ENS5132\Projeto01"
     os.makedirs(repoPath+'/figuras/'+uf, exist_ok=True)
     
     dropnaDF = meltedDf.dropna()
@@ -41,6 +40,8 @@ def FlowHydro(meltedDf,uf,repoPath):
 # Média mensal por ano
 
 def FlowHydroMonth(meltedDf,uf,repoPath):
+    uf= 'GO'
+    repoPath = r"C:\Users\Carlos - SC\Documents\GitHub\ENS5132\Projeto01"
     os.makedirs(repoPath + '/figuras/' + uf, exist_ok=True)
     dropnaDF = meltedDf.dropna()
 
@@ -70,9 +71,12 @@ def FlowHydroMonth(meltedDf,uf,repoPath):
     # Salvando o gráfico
     fig.savefig(repoPath + '/figuras/' + uf + '/hidrogramaMédiaMensal.png', bbox_inches='tight')
     
+    
 #%% HEATMAP das Médias Mensais com Cores Centradas na Média Geral
 
 def FlowHeatMap(meltedDf, uf, repoPath, meanMonth):
+    uf= 'GO'
+    repoPath = r"C:\Users\Carlos - SC\Documents\GitHub\ENS5132\Projeto01"
     os.makedirs(repoPath + '/figuras/' + uf, exist_ok=True)
     
     # Cria a tabela pivot (ano vs mês)
@@ -116,6 +120,8 @@ def FlowHeatMap(meltedDf, uf, repoPath, meanMonth):
 
 # Garante que o DataFrame tem as colunas 'month' (1 a 12) e 'flow'
 def FlowBoxPlot(meltedDf, uf, repoPath):
+    uf= 'GO'
+    repoPath = r"C:\Users\Carlos - SC\Documents\GitHub\ENS5132\Projeto01"
     os.makedirs(repoPath + '/figuras/' + uf, exist_ok=True)
     dropnaDF = meltedDf.dropna()
 
