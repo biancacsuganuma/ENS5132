@@ -9,8 +9,6 @@ import numpy as np
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
-import scipy.stats as stats
-from datetime import datetime
 import statsmodels.api as sm
 
 
@@ -36,7 +34,7 @@ def timeSeriesDecompose(meltedDf, uf, repoPath):
     dataDecompose = dataDecompose.set_index('Date')
     
     # Agrupa por mês e calcula a média mensal
-    dataDecomposeMonthly = dataDecompose.groupby(pd.Grouper(freq="M")).mean()
+    dataDecomposeMonthly = dataDecompose.groupby(pd.Grouper(freq="Y")).mean()
     
     # Converte para a função de decomposição do statsmodel
     # Agora a variável 'dataDecomposeMonthly' é definida corretamente

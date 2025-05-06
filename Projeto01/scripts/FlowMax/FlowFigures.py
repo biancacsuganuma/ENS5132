@@ -9,6 +9,7 @@ import os
 import pandas as pd
 from matplotlib.colors import TwoSlopeNorm
 import seaborn as sns
+from pmdarima.arima import auto_arima
 #%% Fazendo HIDROGRAMA 
        
 def FlowHydro(meltedDf,uf,repoPath):
@@ -18,8 +19,8 @@ def FlowHydro(meltedDf,uf,repoPath):
     
     dropnaDF = meltedDf.dropna()
     
-    x = dropnaDF['Date']        # Eixo X (ex: datas ou tempo)
-    y = dropnaDF['flow']     # Eixo Y (ex: vazão)
+    x = dropnaDF['Date']        # Eixo X ( datas)
+    y = dropnaDF['flow']     # Eixo Y ( vazão)
     
     # Criando uma figura e um eixo
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -29,9 +30,9 @@ def FlowHydro(meltedDf,uf,repoPath):
     ax.set_yscale('log') # colocando y na escala logaritmica, para melhor visualização
     
     # Títulos e rótulos
-    ax.set_title('Gráfico de Linha da Vazão')
+    ax.set_title('Hidrograma Vazões diárias')
     ax.set_xlabel('Data')
-    ax.set_ylabel('Vazão (m³/s)')
+    ax.set_ylabel('Log10(Vazão)')
     
     # Salvando o gráfico
     fig.savefig(repoPath+'/figuras/'+uf+'/hidrograma.png', bbox_inches='tight')
@@ -49,17 +50,21 @@ def FlowHydroMonth(meltedDf,uf,repoPath):
     meanMonth = dropnaDF.groupby(['year', 'month'])['flow'].mean().reset_index()
 
     # Cria uma coluna datetime com base em year + month no DataFrame 
-    meanMonth['DateMonth'] = pd.to_datetime(meanMonth['year'].astype(str) + '-' + meanMonth['month'].astype(str) + '-01')
+    meanMonth['DateMonth'] = pd.to_datetime(meanMonth['year'].astype(str) 
+                                            + '-' + meanMonth['month'].astype(str) + '-01')
 
     # Média geral da série
     meanGeral = dropnaDF['flow'].mean()
+    print(meanGeral)
 
     # Criando uma figura e um eixo
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Hidrograma com linha
-    ax.plot(meanMonth['DateMonth'], meanMonth['flow'], color='purple', linewidth=1, label='Variação da média mensal')
-    ax.axhline(meanGeral, color='red', linestyle='--', linewidth=2, label=f'Média geral ({meanGeral:.2f} m³/s)')
+    ax.plot(meanMonth['DateMonth'], meanMonth['flow'], 
+            color='purple', linewidth=1, label='Variação da média mensal')
+    ax.axhline(meanGeral, color='red', linestyle='--',
+               linewidth=2, label=f'Média geral ({meanGeral:.2f} m³/s)')
 
     # Formatação do eixo X
     plt.xticks(rotation=45)
@@ -154,12 +159,12 @@ def FlowHistograma(meltedDf,uf,repoPath):
     
     # Criando o histograma da coluna 'flow' com bins automáticos
     ax.hist(dropnaDF['flow'], edgecolor='black', color='purple', label='Vazão')
+    ax.set_yscale('log') # colocando y na escala logaritmica, para melhor visualização
     
     # Adicionando título e rótulos aos eixos
-    ax.set_yscale('log') # colocando y na escala logaritmica, para melhor visualização
     ax.set_title('Histograma da Vazão', fontsize=14)
     ax.set_xlabel('Vazão (m³/s)', fontsize=12)
-    ax.set_ylabel('Frequência', fontsize=12)
+    ax.set_ylabel('Log10(Frequência)', fontsize=12)
     
     # Remover os valores do eixo X (já que estão sendo exibidos em cima das barras)
     #ax.set_xticklabels([])  # Remove os rótulos de texto no eixo X 
@@ -167,9 +172,62 @@ def FlowHistograma(meltedDf,uf,repoPath):
     # Salvando o gráfico
     fig.savefig(repoPath+'/figuras/'+uf+'/histograma.png', bbox_inches='tight')
     
-
-
     
     
+#%% Fazendo o Previsão 
+# pip install pmdarima
+    from pmdarima.arima import auto_arima
+
+    def timeSeriesForecastmeltedDf(meltedDf, uf, repoPath):
+        
+        os.makedirs(f'{repoPath}/figuras/{uf}', exist_ok=True)
+
+        # Removendo NANs e ajustando índice
+        timeDF = meltedDf[['Date', 'flow']].dropna()
+        timeDF['Date'] = pd.to_datetime(timeDF['Date'])  # garante que Date é datetime
+        timeDF.set_index('Date', inplace=True)
+    
+        # Ajustando o modelo ARIMA
+        stepwise_model = auto_arima(
+            timeDF, 
+            start_p=1, start_q=1, 
+            max_p=3, max_q=3, 
+            m=12, seasonal=True, 
+            error_action='ignore', suppress_warnings=True
+        )
+    
+        print(f"AIC do modelo: {stepwise_model.aic()}")
+    
+        # Separando dados em treino e teste (70/30)
+        split = int(len(timeDF) * 0.7)
+        train = timeDF.iloc[:split]
+        test = timeDF.iloc[split:]
+    
+        # Ajusta modelo com dados de treino
+        stepwise_model.fit(train)
+    
+        # Previsão
+        forecast_values = stepwise_model.predict(n_periods=len(test))
+        future_forecast = pd.Series(forecast_values, index=test.index, name='Previsão')
+    
+        # Plotagem
+        fig, ax = plt.subplots(figsize=(12, 5))
+        train.plot(ax=ax, label='Treino')
+        test.plot(ax=ax, label='Teste', color='orange')
+        future_forecast.plot(ax=ax, label='Previsão', color='green', linestyle='--')
+    
+        ax.set_title(f'Previsão de Vazões ({uf})')
+        ax.set_xlabel('Data')
+        ax.set_ylabel('Vazão')
+        ax.legend()
+    
+        # Salvando figura
+        fig.savefig(f'{repoPath}/figuras/{uf}/previsao.png', bbox_inches='tight')
+       
+            
+    
+    
+        
+        
     
 
